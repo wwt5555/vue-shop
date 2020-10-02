@@ -27,7 +27,17 @@
                       <i class="el-icon-caret-right"></i>
                     </el-col>
                     <!-- 二级和三级权限 -->
-                    <el-col :span="19"></el-col>
+                    <el-col :span="19">
+                      <el-row v-for="(item2,i2) in item1.children" :key="item2.id" :class="[i2===0 ? '' : 'bdtop']">
+                        <el-col :span="6">
+                          <el-tag type="success">{{item2.authName}}</el-tag>
+                          <i class="el-icon-caret-right"></i>
+                        </el-col>
+                        <el-col :span="18">
+                          <el-tag type="warning" v-for="(item3,i3) in item2.children" :key="item3.id">{{item3.authName}}</el-tag>
+                        </el-col>
+                      </el-row>
+                    </el-col>
                   </el-row>
                   <pre>
                     {{role.row}}
@@ -219,9 +229,9 @@ export default {
   margin: 7px;
 }
 .bdtop {
-  border: 1px solid #eee;
+  border-top: 1px solid #eee;
 }
 .bdbottom {
-  border: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 </style>
