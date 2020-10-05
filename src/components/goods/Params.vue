@@ -298,7 +298,6 @@ export default {
           this.$refs.saveTagInput.$refs.input.focus();
         })          
         },
-        //将对att_vals的操作保存到数据库中
         async saveAttrVals(row,flag){
             const msg = flag === 'add' ? '添加' : '删除'
             const {data:res} = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`,{
