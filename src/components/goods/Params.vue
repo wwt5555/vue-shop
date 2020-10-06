@@ -73,7 +73,25 @@
                 <!-- 静态属性表格 -->
                 <el-table :data="onlyTableDate" border stripe> 
                     <!-- 展开行 -->
-                    <el-table-column type="expand"></el-table-column>
+                    <el-table-column type="expand">
+                        <template v-slot="scope">
+                            <!-- 循环渲染tag标签 -->
+                            <el-tag v-for="(item,i) in scope.row.attr_vals" :key="i" closable @close="handleClose(i,scope.row)">{{item}}</el-tag>
+                            <!-- 输入的文本框 -->
+                            <el-input
+                            class="input-new-tag"
+                            v-if="scope.row.inputVisible"
+                            v-model="scope.row.inputValue"
+                            ref="saveTagInput"
+                            size="small"
+                            @keyup.enter.native="handleInputConfirm(scope.row)"
+                            @blur="handleInputConfirm(scope.row)"
+                            >
+                            </el-input>
+                            <!-- 添加的按钮 -->
+                            <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
+                        </template>
+                    </el-table-column>
                     <!-- 索引列 -->
                     <el-table-column type="index" label="#"></el-table-column>
                     <el-table-column label="属性名称" prop="attr_name"></el-table-column>
@@ -187,6 +205,8 @@ export default {
             //证明选中的不是三级分类
             if(this.selectedCateKeys.length !== 3){
                 this.selectedCateKeys = []
+                this.manyTableDate = []
+                this.onlyTableDate = []
                 return
             }
             //选中了三级分类
@@ -300,25 +320,29 @@ export default {
         },
         async saveAttrVals(row,flag){
             const msg = flag === 'add' ? '添加' : '删除'
-            const {data:res} = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`,{
-                attr_name: row.attr_name,
-                attr_sel: row.attr_sel,
-                attr_vals: row.attr_vals.join(' ')
-            })
-            if(res.meta.status !== 200){
-                return this.$message.error(`${msg}参数项失败`)
-            }
             if(flag === 'add'){
                 
                 row.attr_vals.push(row.inputValue.trim())
                 row.inputValue = ''
                 row.inputVisible = false
             }
+            const {data:res} = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`,{
+                attr_name: row.attr_name,
+                attr_sel: row.attr_sel,
+                attr_vals: row.attr_vals.join(' ')
+            })
+            
+            if(res.meta.status !== 200){
+                row.attr_vals.pop()
+                return this.$message.error(`${msg}参数项失败`)
+            }
+            
             this.$message.success(`${msg}参数项成功`)
+            // console.log(res.data);
         },
         handleClose(i,row){
             row.attr_vals.splice(i,1)
-            console.log(row.attr_vals);
+            // console.log(row.attr_vals);
             this.saveAttrVals(row,'detele')
         }
     },
