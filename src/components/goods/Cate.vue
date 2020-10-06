@@ -202,7 +202,7 @@ export default {
         },
         //选择项发生变化触发这个函数
         parentCateChange(){
-            console.log(this.selectedKeys);
+            // console.log(this.selectedKeys);
             //如果selectedKeys数组中的length大于0，证明选中了父级分类
             if(this.selectedKeys.length > 0){
                 //父级分类的id
