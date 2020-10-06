@@ -323,7 +323,7 @@ export default {
         }
     },
     computed: {
-        //如果按钮需要被禁用，则返回true,否则返回false
+        //如果按钮需要被禁用，返回true,否则返回false
         isBtnDisabled(){
             if(this.selectedCateKeys.length !== 3){
                 return true
